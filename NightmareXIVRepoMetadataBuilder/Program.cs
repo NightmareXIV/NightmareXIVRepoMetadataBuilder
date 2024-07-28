@@ -2,8 +2,12 @@
 
 internal class Program
 {
+    static string? Key = null;
     static void Main(string[] args)
     {
+        var envvars = (object[])[.. Environment.GetEnvironmentVariables().Keys];
+        Console.WriteLine($"Existing envvars: {string.Join(", ", envvars.Select(x => x.ToString()))}");
+        Key = Environment.GetEnvironmentVariable("GH_TOKEN") ?? throw new NullReferenceException("Token is null");
         foreach(var param in ParseParams())
         {
             Console.WriteLine($"{param.Key}={param.Value}");
