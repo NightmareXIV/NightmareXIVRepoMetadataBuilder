@@ -17,7 +17,7 @@ internal class Program
         var pars = ParseParams();
         foreach(var param in pars)
         {
-            Console.WriteLine($"{param.Key}={param.Value}");
+            Console.WriteLine($"{param[0]}={param[1]}");
         }
 
         var currentRepo = Environment.GetEnvironmentVariable("GITHUB_REPOSITORY").Split("/");
@@ -29,7 +29,7 @@ internal class Program
         StringBuilder builder = new();
         builder.Append($"# {repo.Name}\n");
 
-        if(pars.TryGetValue("description", out var v) && v == "false")
+        if(pars.Any(x => x[0] == "description" && x[1] == "false"))
         {
             //
         }
@@ -40,8 +40,16 @@ internal class Program
 
         foreach(var param in pars)
         {
-            var text = github.Connection.GetHtml(new(GetURL(param.Key, param.Value)), new Dictionary<string, string>()).Result.Body
-                .Replace("$plugin", repo.Name);
+            string text;
+            if(param[0] == "file")
+            {
+                text = File.ReadAllText($"meta/{param[1]}.md");
+            }
+            else
+            {
+                text = github.Connection.GetHtml(new(GetURL(param[0], param[1])), new Dictionary<string, string>()).Result.Body
+                    .Replace("$plugin", repo.Name);
+            }
             builder.Append(text);
             if(!text.EndsWith("\n"))
             {
@@ -57,16 +65,20 @@ internal class Program
         return $"https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/meta/{param}/{type}.md";
     }
 
-    static Dictionary<string, string> ParseParams()
+    static List<string[]> ParseParams()
     {
         var file = File.ReadAllText("meta/config.ini").Split("\n");
-        var ret = new Dictionary<string, string>();
+        var ret = new List<string[]>();
         foreach(var line in file)
         {
             var s = line.Trim().Split("=");
             if(s.Length == 2)
             {
-                ret.Add(s[0], s[1]);
+                ret.Add(s);
+            }
+            else if(s.Length == 1)
+            {
+                ret.Add(["file", s[0]]); ;
             }
         }
         return ret;
