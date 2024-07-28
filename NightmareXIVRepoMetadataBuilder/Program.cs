@@ -22,7 +22,7 @@ internal class Program
         foreach(var line in file)
         {
             var s = line.Trim().Split("=");
-            if(s.Length == 1)
+            if(s.Length == 2)
             {
                 ret.Add(s[0], s[1]);
             }
