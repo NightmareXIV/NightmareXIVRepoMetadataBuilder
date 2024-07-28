@@ -71,14 +71,17 @@ internal class Program
         var ret = new List<string[]>();
         foreach(var line in file)
         {
-            var s = line.Trim().Split("=");
+            var s = line.Trim().Split("=", StringSplitOptions.TrimEntries);
             if(s.Length == 2)
             {
                 ret.Add(s);
             }
             else if(s.Length == 1)
             {
-                ret.Add(["file", s[0]]); ;
+                if(s[0] != "")
+                {
+                    ret.Add(["file", s[0]]);
+                }
             }
         }
         return ret;
