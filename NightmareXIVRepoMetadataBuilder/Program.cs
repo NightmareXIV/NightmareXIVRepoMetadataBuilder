@@ -47,7 +47,7 @@ internal class Program
             }
             else
             {
-                text = github.Connection.GetHtml(new(GetURL(param[0], param[1])), new Dictionary<string, string>()).Result.Body
+                text = github.Connection.GetHtml(new(GetURL(param[0], param[1]))).Result.Body
                     .Replace("$plugin", repo.Name);
             }
             builder.Append(text);
@@ -58,6 +58,8 @@ internal class Program
         }
 
         File.WriteAllText("README.md", builder.ToString(), Encoding.UTF8);
+        var funding = github.Connection.GetHtml(new("https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/.github/FUNDING.yml")).Result.Body;
+        File.WriteAllText(".github/FUNDING.yml", funding);
     }
 
     static string GetURL(string param, string type)
