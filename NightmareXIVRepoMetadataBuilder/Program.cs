@@ -40,7 +40,8 @@ internal class Program
 
         foreach(var param in pars)
         {
-            var text = github.Connection.GetHtml(new(GetURL(param.Key, param.Value)), new Dictionary<string, string>()).Result.Body;
+            var text = github.Connection.GetHtml(new(GetURL(param.Key, param.Value)), new Dictionary<string, string>()).Result.Body
+                .Replace("$plugin", repo.Name);
             builder.Append(text);
             if(!text.EndsWith("\n"))
             {
