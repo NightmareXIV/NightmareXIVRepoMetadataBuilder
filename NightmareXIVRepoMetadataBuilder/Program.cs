@@ -60,6 +60,8 @@ internal class Program
         File.WriteAllText("README.md", builder.ToString(), Encoding.UTF8);
         var funding = github.Connection.GetHtml(new("https://github.com/NightmareXIV/MyDalamudPlugins/raw/main/.github/FUNDING.yml")).Result.Body;
         File.WriteAllText(".github/FUNDING.yml", funding);
+        var contributing = github.Connection.GetHtml(new("https://github.com/NightmareXIV/MyDalamudPlugins/raw/refs/heads/main/meta/CONTRIBUTING.md")).Result.Body;
+        File.WriteAllText("CONTRIBUTING.md", contributing);
     }
 
     static string GetURL(string param, string type)
